@@ -3,7 +3,7 @@ use image::Rgb;
 use rand::prelude::*;
 use scarlet::{colormap::*, prelude::*};
 
-use day006::Ripple;
+use rustingpixels::Ripple;
 
 fn main() {
     let width: u32 = 1080;

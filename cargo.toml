@@ -1,11 +1,13 @@
-[workspace]
+[package]
+name = "rustingpixels"
+version = "0.1.0"
+edition = "2021"
 
-members = [
-    "day000",
-    "day001",
-    "day002",
-    "day003",
-    "day004",
-    "day005",
-    "day006",
-]
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+num = "0.4"
+image = "0.23"
+rand = "0.7"
+noise = "0.7"
+scarlet = "1.1"
