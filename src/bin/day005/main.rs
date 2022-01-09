@@ -119,7 +119,7 @@ fn main() {
 //     Rgb([output.int_r(), output.int_g(), output.int_b()])
 // }
 
-fn f1<R: Rng>(x: f64, y: f64, scale: f64, offset: f64, rng: &mut R, colors: &ListedColorMap) -> Rgb<u8> {
+fn f1<R: Rng>(x: f64, y: f64, scale: f64, offset: f64, _rng: &mut R, colors: &ListedColorMap) -> Rgb<u8> {
     // let r1 = 0.3;
     // let r2 = 0.05;
     // let x1 = scale * (x - (offset + r1));
@@ -133,29 +133,29 @@ fn f1<R: Rng>(x: f64, y: f64, scale: f64, offset: f64, rng: &mut R, colors: &Lis
 }
 
 
-fn f2<R: Rng>(x: f64, y: f64, scale: f64, offset: f64, rng: &mut R, colors: &ListedColorMap) -> Rgb<u8> {
-    let r1 = 0.3;
-    let r2 = 0.05;
-    let x1 = scale * (x - (offset + r1));
-    let y1 = scale * (y - (offset + r2));
-    let z1 = 0.25 * f64::sin(x1 * x1 + y1 * y1) + 0.5; 
-    // let x2 = scale * (x - offset);
-    // let y2 = scale * (y - offset);
-    // let z2 = -0.34 * f64::sin(x2 * x2 + y2 * y2) + 0.5; 
-    let output: RGBColor = colors.transform_single(z1);
-    Rgb([output.int_r(), output.int_g(), output.int_b()])
-}
+// fn f2<R: Rng>(x: f64, y: f64, scale: f64, offset: f64, _rng: &mut R, colors: &ListedColorMap) -> Rgb<u8> {
+//     let r1 = 0.3;
+//     let r2 = 0.05;
+//     let x1 = scale * (x - (offset + r1));
+//     let y1 = scale * (y - (offset + r2));
+//     let z1 = 0.25 * f64::sin(x1 * x1 + y1 * y1) + 0.5; 
+//     // let x2 = scale * (x - offset);
+//     // Let y2 = scale * (y - offset);
+//     // let z2 = -0.34 * f64::sin(x2 * x2 + y2 * y2) + 0.5; 
+//     let output: RGBColor = colors.transform_single(z1);
+//     Rgb([output.int_r(), output.int_g(), output.int_b()])
+// }
 
-fn f3<R: Rng>(x: f64, y: f64,
-              scale1: f64, offset1: f64,
-              scale2: f64, offset2: f64,
-              rng: &mut R, colors: &ListedColorMap) -> Rgb<u8> {
-    let x1 = scale1 * (x - offset1);
-    let y1 = scale1 * (y - offset1);
-    let z1 = 0.25 * f64::sin(x1 * x1 + y1 * y1) + 0.5; 
-    let x2 = scale2 * (x - offset2);
-    let y2 = scale2 * (y - offset2);
-    let z2 = 0.25 * f64::sin(x2 * x2 + y2 * y2) + 0.5; 
-    let output: RGBColor = colors.transform_single((z1 + z2)/2.0);
-    Rgb([output.int_r(), output.int_g(), output.int_b()])
-}
+// fn f3<R: Rng>(x: f64, y: f64,
+//               scale1: f64, offset1: f64,
+//               scale2: f64, offset2: f64,
+//               _rng: &mut R, colors: &ListedColorMap) -> Rgb<u8> {
+//     let x1 = scale1 * (x - offset1);
+//     let y1 = scale1 * (y - offset1);
+//     let z1 = 0.25 * f64::sin(x1 * x1 + y1 * y1) + 0.5; 
+//     let x2 = scale2 * (x - offset2);
+//     let y2 = scale2 * (y - offset2);
+//     let z2 = 0.25 * f64::sin(x2 * x2 + y2 * y2) + 0.5; 
+//     let output: RGBColor = colors.transform_single((z1 + z2)/2.0);
+//     Rgb([output.int_r(), output.int_g(), output.int_b()])
+// }
