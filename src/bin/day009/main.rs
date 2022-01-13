@@ -1,5 +1,5 @@
 use image::Rgb;
-use rand::prelude::*;
+//use rand::prelude::*;
 use scarlet::{colormap::*, prelude::*};
 
 use rustingpixels::Crazy;
@@ -10,7 +10,7 @@ fn main() {
     let mut image = image::RgbImage::new(width, height);
 
     // good candidates = 5
-    let mut rng = StdRng::seed_from_u64(5);
+    //let mut rng = StdRng::seed_from_u64(5);
 
     let colors = vec![ListedColorMap::plasma()];
 
