@@ -1,3 +1,6 @@
+pub mod primitives;
+
+
 #[derive(Debug)]
 pub struct Ripple {
     pub x0: f64,
