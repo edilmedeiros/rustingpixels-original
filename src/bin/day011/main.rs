@@ -1,124 +1,87 @@
 use image::{Pixel, Rgba};
 use rand::prelude::*;
-use std::f64;
+//use scarlet::{colormap::*, prelude::*};
+
+//use rustingpixels::Crazy;
 
 use rustingpixels::primitives::canvas::*;
 
 fn main() {
     let width: u32 = 1080;
     let height: u32 = 1080;
-
-    let gray = Rgba([255, 255, 255, 20]);
     let black = Rgba([0, 0, 0, 255]);
 
-    let mut image1 = image::RgbaImage::from_pixel(width, height, black);
-    let mut image2 = image::RgbaImage::from_pixel(width, height, black);
-    let mut image3 = image::RgbaImage::from_pixel(width, height, black);
+    let palette1 = vec![
+        Rgba([0xE6, 0x39, 0x46, 255]),
+        Rgba([0xF1, 0xFA, 0xEE, 255]),
+        Rgba([0xA8, 0xDA, 0xDC, 255]),
+        Rgba([0x45, 0x7B, 0x9D, 255]),
+        Rgba([0x1D, 0x35, 0x57, 255]),
+    ];
 
-    let matrix = TransformMatrix {
-        xx: (width - 1) as f64 / 4.0,
-        yx: 0.0,
-        xy: 0.0,
-        yy: (height - 1) as f64 / 4.0,
-        x0: width as f64 / 2.0,
-        y0: height as f64 / 2.0,
-    };
-      
+    let palette2 = vec![
+        Rgba([0x00, 0x64, 0x66, 255]),
+        Rgba([0x06, 0x5A, 0x60, 255]),
+        Rgba([0x0B, 0x52, 0x5B, 255]),
+        Rgba([0x14, 0x45, 0x52, 255]),
+        Rgba([0x1B, 0x3A, 0x4B, 255]),
+        Rgba([0x21, 0x2f, 0x45, 255]),
+        Rgba([0x27, 0x26, 0x40, 255]),
+        Rgba([0x31, 0x22, 0x44, 255]),
+        Rgba([0x3E, 0x1F, 0x47, 255]),
+        Rgba([0x4D, 0x19, 0x4D, 255]),
+    ];
 
-    let mut p = Point { x: 0.0, y: 0.0 };
-    let a = 0.97;
-    let b = -1.90;
-    let c = 1.38;
-    let d = -1.5;
-    for _i in 0..12_000_000 {
-        let (x, y) = p.point_to_canvas_coordinate(&matrix);
-        image1.get_pixel_mut(x, y).blend(&gray);
-        p = de_jong_ifs(a, b, c, d, p);
-    }
-    image1.save("images/day011-0.png").unwrap();
+    let palette3 = vec![
+        Rgba([0x7B, 0x11, 0x12, 255]),
+        Rgba([0x8C, 0x1F, 0x27, 255]),
+        Rgba([0xFF, 0xB3, 0x02, 255]),
+        Rgba([0xDB, 0x91, 0x01, 255]),
+        Rgba([0x6E, 0x09, 0x0C, 255]),
+    ];
 
-    let mut p = Point { x: 0.0, y: 0.0 };
-    let a = 1.641;
-    let b = 1.902;
-    let c = 0.316;
-    let d = 1.525;
-    for _i in 0..12_000_000 {
-        let (x, y) = p.point_to_canvas_coordinate(&matrix);
-        image2.get_pixel_mut(x, y).blend(&gray);
-        p = de_jong_ifs(a, b, c, d, p);
-    }
-    image2.save("images/day011-1.png").unwrap();
+    let palettes = vec![palette1, palette2, palette3];
+    let mut image = image::RgbaImage::from_pixel(width, height, black);
+    let mut rng = StdRng::seed_from_u64(1);
 
-    let mut p = Point { x: 0.0, y: 0.0 };
-    let a = 1.4;
-    let b = -2.3;
-    let c = 2.4;
-    let d = -2.1;
-    for _i in 0..12_000_000 {
-        let (x, y) = p.point_to_canvas_coordinate(&matrix);
-        image2.get_pixel_mut(x, y).blend(&gray);
-        p = de_jong_ifs(a, b, c, d, p);
-    }
-    image3.save("images/day011-2.png").unwrap();
-
-    
-    {
-        // Good candidates: 5, 6, 8, 15, 17, 19, 20, 52, 56, 58, 62, 66, 69, 73, 75, 77, 83, 86, 92, 95, 
-        // 115, 116, 124, 126, 130, 139, 140, 145, 146, 150, 152, 153, 169, 178, 189, 191, 192, 194, 200,
-        // 210, 223, 228, 248, 257, 261, 282, 286, 295, 301*, 307, 316, 318, 319*, 329, 351, 362, 363*,
-        // 370, 374*, 379, 380, 384, 388, 393, 399, 410, 435, 439*, 456, 481*, 488, 500, 502, 514, 522,
-        // 524*, 527, 528, 532, 533, 540, 542, 553, 557, 571, 580, 581, 618, 620*, 622, 634, 663, 669,
-        // 672, 681, 684, 687, 688, 690, 691, 697, 713, 720, 726, 728, 755, 762, 763*, 766, 783, 813,
-        // 815, 826, 835, 839, 840, 844, 846, 848, 850, 873, 886, 890*, 911, 931, 934, 939, 941, 942,
-        // 947, 951, 952, 957, 960, 974, 985, 990, 995, 996, 997
-        crossbeam::scope(|spawner| {
-            let v = vec![
-                5, 6, 8, 15, 17, 19, 20, 52, 56, 58, 62, 66, 69, 73, 75, 77, 83, 86, 92, 95, 
-                115, 116, 124, 126, 130, 139, 140, 145, 146, 150, 152, 153, 169, 178, 189, 191,
-                192, 194, 200, 210, 223, 228, 248, 257, 261, 282, 286, 295, 301, 307, 316, 318,
-                319, 329, 351, 362, 363, 370, 374, 379, 380, 384, 388, 393, 399, 410, 435, 439,
-                456, 481, 488, 500, 502, 514, 522, 524, 527, 528, 532, 533, 540, 542, 553, 557,
-                571, 580, 581, 618, 620, 622, 634, 663, 669, 672, 681, 684, 687, 688, 690, 691,
-                697, 713, 720, 726, 728, 755, 762, 763, 766, 783, 813, 815, 826, 835, 839, 840,
-                844, 846, 848, 850, 873, 886, 890, 911, 931, 934, 939, 941, 942, 947, 951, 952,
-                957, 960, 974, 985, 990, 995, 996, 997
-            ];
-            for i in v {
-            //for i in 0..1000 {
-                spawner.spawn(move |_| {
-                    let mut image = image::RgbaImage::from_pixel(width, height, black);
-                    let matrix2 = TransformMatrix {
-                        xx: (width - 1) as f64 / 4.0,
-                        yx: 0.0,
-                        xy: 0.0,
-                        yy: (height - 1) as f64 / 4.0,
-                        x0: width as f64 / 2.0,
-                        y0: height as f64 / 2.0,
-                    };
-                    let mut p = Point { x: 0.0, y: 0.0 };
-                    let mut rng = StdRng::seed_from_u64(i);
-                    let a: f64 = 2.0 * rng.gen::<f64>();
-                    let b: f64 = 2.0 * rng.gen::<f64>();
-                    let c: f64 = 2.0 * rng.gen::<f64>();
-                    let d: f64 = 2.0 * rng.gen::<f64>();
-                    for _i in 0..12_000_000 {
-                        let (x, y) = p.point_to_canvas_coordinate(&matrix2);
-                        image.get_pixel_mut(x, y).blend(&gray);
-                        p = de_jong_ifs(a, b, c, d, p);
-                    }
-                    image
-                        .save(format!("images/de-jong/day011-{}.png", i))
-                        .unwrap();
+    for k in 0..5 {
+        let mut matrices = Vec::new();
+        let i_bound = rng.gen_range(10, 30);
+        let j_bound = rng.gen_range(10, 30);
+        println!("{}, {}", i_bound, j_bound);
+        for i in 0..i_bound {
+            for j in 0..j_bound {
+                matrices.push(TransformMatrix {
+                    xx: (width - 1) as f64 / i_bound as f64,
+                    yx: 0.0,
+                    xy: 0.0,
+                    yy: (height - 1) as f64 / j_bound as f64,
+                    x0: width as f64 / i_bound as f64 * i as f64,
+                    y0: height as f64 / j_bound as f64 * j as f64,
                 });
             }
-        })
-        .unwrap();
+        }
+
+        let palette = &palettes[rng.gen_range(0, palettes.len())];
+        for matrix in matrices.iter() {
+            let alpha: u8 = rng.gen_range(150, 255);
+            let mut color = palette[rng.gen_range(0, palette.len())];
+            color.channels_mut()[3] = alpha;
+
+            let density: u32 = rng.gen_range(500, 5000);
+            for _j in 0..density {
+                let p = random_point(&mut rng);
+                let (x, y) = p.point_to_canvas_coordinate(matrix);
+                image.get_pixel_mut(x, y).blend(&color);
+            }
+        }
+        image.save(format!("images/day011-{}.png", k)).unwrap();
     }
 }
 
-fn de_jong_ifs(a: f64, b: f64, c: f64, d: f64, p: Point<f64>) -> Point<f64> {
+fn random_point<R: Rng>(rng: &mut R) -> Point<f64> {
     Point {
-        x: (a * p.y).sin() - (b * p.x).cos(),
-        y: (c * p.x).sin() - (d * p.y).cos(),
+        x: rng.gen(),
+        y: rng.gen(),
     }
 }
