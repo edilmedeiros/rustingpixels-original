@@ -1,65 +1,91 @@
 use image::{Pixel, Rgba};
 use rand::prelude::*;
-use std::f64;
+//use scarlet::{colormap::*, prelude::*};
+
+//use rustingpixels::Crazy;
 
 use rustingpixels::primitives::canvas::*;
 
 fn main() {
     let width: u32 = 1080;
     let height: u32 = 1080;
+//    let black = Rgba([0, 0, 0, 255]);
 
-    let bg = Rgba([0x26, 0x46, 0x53, 0xFF]);
-    let color = Rgba([0xe9, 0xc4, 0x6a, 0x20]);
+    let palette1 = vec![
+        Rgba([0xE6, 0x39, 0x46, 255]),
+        Rgba([0xF1, 0xFA, 0xEE, 255]),
+        Rgba([0xA8, 0xDA, 0xDC, 255]),
+        Rgba([0x45, 0x7B, 0x9D, 255]),
+        Rgba([0x1D, 0x35, 0x57, 255]),
+    ];
 
-    let mut image = image::RgbaImage::from_pixel(width, height, bg);
+    let palette2 = vec![
+        Rgba([0x00, 0x64, 0x66, 255]),
+        Rgba([0x06, 0x5A, 0x60, 255]),
+        Rgba([0x0B, 0x52, 0x5B, 255]),
+        Rgba([0x14, 0x45, 0x52, 255]),
+        Rgba([0x1B, 0x3A, 0x4B, 255]),
+        Rgba([0x21, 0x2f, 0x45, 255]),
+        Rgba([0x27, 0x26, 0x40, 255]),
+        Rgba([0x31, 0x22, 0x44, 255]),
+        Rgba([0x3E, 0x1F, 0x47, 255]),
+        Rgba([0x4D, 0x19, 0x4D, 255]),
+    ];
+
+    let palette3 = vec![
+        Rgba([0x7B, 0x11, 0x12, 255]),
+        Rgba([0x8C, 0x1F, 0x27, 255]),
+        Rgba([0xFF, 0xB3, 0x02, 255]),
+        Rgba([0xDB, 0x91, 0x01, 255]),
+        Rgba([0x6E, 0x09, 0x0C, 255]),
+    ];
+
+//    let palettes = vec![palette1, palette2, palette3];
+    let mut rng = StdRng::seed_from_u64(5);
+
+    let bg = vec![&palette3[4], &palette1[4], &palette1[4], &palette2[6]];
+    let color = vec![&palette3[2], &palette1[0], &palette1[1], &palette2[0]];
+
     
-    let matrix = TransformMatrix {
-        xx: (width - 1) as f64 / 8.0,
-        yx: 0.0,
-        xy: 0.0,
-        yy: (height - 1) as f64 / 11.0,
-        x0: width as f64 / 2.0,
-        y0: height as f64 / 1080.0,
-    };
+    for k in 0..4 {
+        let mut image = image::RgbaImage::from_pixel(width, height, *bg[k]);
 
-    let mut p = Point { x: 0.0, y: 0.0 };
-    let mut rng = StdRng::seed_from_u64(1);
-
-    let f1: fn(Point<f64>) -> Point<f64> = |p| {affine_transformation(0.0, 0.0, 0.0, 0.16, 0.0, 0.0, p)};
-    let f2: fn(Point<f64>) -> Point<f64> = |p| {affine_transformation(0.85, 0.04, -0.04, 0.85, 0.0, 1.6, p)};
-    let f3: fn(Point<f64>) -> Point<f64> = |p| {affine_transformation(0.2, -0.26, 0.23, 0.22, 0.0, 1.6, p)};
-    let f4: fn(Point<f64>) -> Point<f64> = |p| {affine_transformation(-0.15, 0.28, 0.26, 0.24, 0.0, 0.44, p)};
-
-    const ITERATIONS: u32 = 3_000_000;
-    for _i in 0..ITERATIONS {
-        let (x, y) = p.point_to_canvas_coordinate(&matrix);
-        if point_is_visible(x, y, image.width(), image.height()) {
-            image.get_pixel_mut(x, y).blend(&color);
+        let mut matrices = Vec::new();
+        let i_bound = 5;
+        let j_bound = 1;
+        for i in 0..i_bound {
+            for j in 0..j_bound {
+                let spacing = 40.0;
+                let w = ((width - 1) as f64 - (i_bound + 1) as f64 * spacing) as f64 / i_bound as f64;
+                let h = ((height - 1) as f64 - (j_bound + 1) as f64 * spacing) as f64 / j_bound as f64;
+                matrices.push(TransformMatrix {
+                    xx: w,
+                    yx: 1.0,//((i % 2_u32) as f64).signum() * i_bound as f64,
+                    xy: 1.0,//((j % 2_u32) as f64).signum() * j_bound as f64,
+                    yy: h,
+                    x0: spacing + (i as f64 * (w + spacing)),
+                    y0: spacing + (j as f64 * (h + spacing)),
+                });
+            }
         }
-        p = barnsley_fern(p, f1, f2, f3, f4, &mut rng);
-    }
-    image
-        .save("images/day013-0.png")
-        .unwrap();
 
-}
+        //let palette = &palettes[rng.gen_range(0, palettes.len())];
+        for matrix in matrices.iter() {
+            //let alpha: u8 = rng.gen_range(150, 255);
+            //let mut color = palette[rng.gen_range(0, palette.len())];
+            //color.channels_mut()[3] = alpha;
 
-fn barnsley_fern<R, F>(p: Point<f64>, f1: F, f2: F, f3: F, f4: F, rng: &mut R) -> Point<f64>
-where
-    R: Rng,
-    F: Fn (Point<f64>) -> Point<f64> {
-    match rng.gen::<f64>() {
-        r if r <= 0.01 => f1(p),
-        r if r <= 0.86 => f2(p),
-        r if r <= 0.93 => f3(p),
-        _                   => f4(p),
-    }
-}
-
-fn affine_transformation(a: f64, b: f64, c: f64, d: f64, e: f64, f: f64, p: Point<f64>) -> Point<f64> {
-    Point {
-        x: a * p.x + b * p.y + e,
-        y: c * p.x + d * p.y + f,
+            let density: u32 = rng.gen_range(20000, 50000);
+            for _j in 0..density {
+                let p = random_point(&mut rng);
+                let (x, y) = p.point_to_canvas_coordinate(matrix);
+                if point_is_visible(x, y, image.width(), image.height()) {
+                    image.get_pixel_mut(x, y).blend(color[k]);
+                    //image.put_pixel(x, y, *color);
+                }
+            }
+        }
+        image.save(format!("images/day013-{}.png", k)).unwrap();
     }
 }
 
@@ -68,5 +94,14 @@ fn point_is_visible(x: u32, y: u32, width: u32, height: u32) -> bool {
         true
     } else {
         false
+    }
+}
+
+fn random_point<R: Rng>(rng: &mut R) -> Point<f64> {
+    let y_scale = 500.0;
+    Point {
+        x: rng.gen(),
+        //y: rng.gen(),
+        y: (y_scale * rng.gen::<f64>() + 1.0).ln() / f64::ln(y_scale + 1.0),
     }
 }
