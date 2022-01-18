@@ -13,7 +13,7 @@ fn main() {
 
     let mut image1 = image::RgbaImage::from_pixel(width, height, black);
     let mut image2 = image::RgbaImage::from_pixel(width, height, black);
-    let mut image3 = image::RgbaImage::from_pixel(width, height, black);
+    let image3 = image::RgbaImage::from_pixel(width, height, black);
 
     let matrix = TransformMatrix {
         xx: (width - 1) as f64 / 4.0,
