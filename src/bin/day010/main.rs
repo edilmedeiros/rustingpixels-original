@@ -46,10 +46,10 @@ fn main() {
         let mut gray = Rgba([255,255,255,255]);
         gray.channels_mut()[3] = rng.gen();
 
-        let mut color = palette[rng.gen_range(0,5)];
+        let mut color = palette[rng.gen_range(0..5)];
         color.channels_mut()[3] = rng.gen();
         
-        let density: u32 = rng.gen_range(500, 5000);
+        let density: u32 = rng.gen_range(500..5000);
         for _j in 0..density {
             let p = random_point(&mut rng);
             let (x, y) = p.point_to_canvas_coordinate(matrix);

@@ -32,5 +32,5 @@ fn main() {
 }
 
 fn f<R: Rng>(rng: &mut R, colors: &[Rgb<u8>]) -> Rgb<u8> {
-    colors[rng.gen_range(0,5)]
+    colors[rng.gen_range(0..5)]
 }

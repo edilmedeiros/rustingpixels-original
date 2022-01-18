@@ -46,8 +46,8 @@ fn main() {
     for k in 0..5 {
         let mut image = image::RgbaImage::from_pixel(width, height, black);
         let mut matrices = Vec::new();
-        let i_bound = rng.gen_range(5, 30);
-        let j_bound = rng.gen_range(5, 30);
+        let i_bound = rng.gen_range(5..30);
+        let j_bound = rng.gen_range(5..30);
         println!("{}, {}", i_bound, j_bound);
         for i in 0..i_bound {
             for j in 0..j_bound {
@@ -62,13 +62,13 @@ fn main() {
             }
         }
 
-        let palette = &palettes[rng.gen_range(0, palettes.len())];
+        let palette = &palettes[rng.gen_range(0..palettes.len())];
         for matrix in matrices.iter() {
-            let alpha: u8 = rng.gen_range(150, 255);
-            let mut color = palette[rng.gen_range(0, palette.len())];
+            let alpha: u8 = rng.gen_range(150..255);
+            let mut color = palette[rng.gen_range(0..palette.len())];
             color.channels_mut()[3] = alpha;
 
-            let density: u32 = rng.gen_range(500, 5000);
+            let density: u32 = rng.gen_range(500..5000);
             for _j in 0..density {
                 let p = random_point(&mut rng);
                 let (x, y) = p.point_to_canvas_coordinate(matrix);

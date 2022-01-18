@@ -75,7 +75,7 @@ fn main() {
             //let mut color = palette[rng.gen_range(0, palette.len())];
             //color.channels_mut()[3] = alpha;
 
-            let density: u32 = rng.gen_range(20000, 50000);
+            let density: u32 = rng.gen_range(20000..50000);
             for _j in 0..density {
                 let p = random_point(&mut rng);
                 let (x, y) = p.point_to_canvas_coordinate(matrix);
