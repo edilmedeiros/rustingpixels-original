@@ -49,9 +49,8 @@ fn main() {
     let bg = vec![&palette4[0], &palette1[4], &palette1[4], &palette2[6]];
     let color = vec![&palette4[2], &palette1[0], &palette1[1], &palette2[0]];
 
-    
+    let mut image = image::RgbaImage::from_pixel(width, height, *bg[0]);
     for k in 0..3 {
-        let mut image = image::RgbaImage::from_pixel(width, height, *bg[k]);
         let transform = TransformMatrix {
             xx: width as f64 / 20.0,
             yx: 1.0,//((i % 2_u32) as f64).signum() * i_bound as f64,
@@ -61,7 +60,7 @@ fn main() {
             y0: height as f64 / 2.0,
         };
 
-        let density: u32 = rng.gen_range(2000..2500);
+        let density: u32 = rng.gen_range(500..1000);
         for _j in 0..density {
             let p = random_point_circular(50.0, &mut rng);
             let (x, y) = p.point_to_canvas_coordinate(&transform);
@@ -76,8 +75,9 @@ fn main() {
                 }
             }
         }
-        image.save(format!("images/day017-{}.png", k)).unwrap();
+        
     }
+    image.save(format!("images/day017-{}.png", 0)).unwrap();
 }
 
 fn point_is_visible(x: u32, y: u32, width: u32, height: u32) -> bool {
