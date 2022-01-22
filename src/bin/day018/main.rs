@@ -10,7 +10,6 @@ fn main() {
     let height: u32 = 1080;
     
     let red = Rgba([0x30, 0x00, 0x7f, 0xff]);
-    let black = Rgba([0,0,0,0xff]);
     let white = Rgba([0xff, 0xff, 0xff, 0xff]);
     let mut canvas = MemoryImage {width, height, buffer: vec![red; (width * height) as usize]};
 
@@ -27,5 +26,5 @@ fn main() {
     }
     
     let image = canvas.into_rgba_image();
-    image.save("images/test.png").unwrap();
+    image.save("images/day018.png").unwrap();
 }

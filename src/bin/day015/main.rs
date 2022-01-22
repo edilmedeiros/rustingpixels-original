@@ -1,6 +1,6 @@
 use image::{Pixel, Rgba};
 use rand::prelude::*;
-use rand_distr::{Normal, Distribution};
+//use rand_distr::{Normal, Distribution};
 use rustingpixels::primitives::canvas::*;
 
 fn main() {
@@ -103,16 +103,16 @@ fn scaled_random_point<R: Rng>(rng: &mut R, x_scale: f64, y_scale: f64) -> Point
     }
 }
 
-fn random_point<R>(rng: &mut R) -> Point<f64>
-where R: Rng {
-    let normal = Normal::new(0.5, 0.3).unwrap();
-    Point {
-        x: normal.sample(rng),
-        y: normal.sample(rng),
-        // x: rng.gen::<f64>(),
-        // y: rng.gen::<f64>(),
-    }
-}
+// fn random_point<R>(rng: &mut R) -> Point<f64>
+// where R: Rng {
+//     let normal = Normal::new(0.5, 0.3).unwrap();
+//     Point {
+//         x: normal.sample(rng),
+//         y: normal.sample(rng),
+//         // x: rng.gen::<f64>(),
+//         // y: rng.gen::<f64>(),
+//     }
+// }
 
 fn shape_coordinates(x: u32, y: u32) -> Vec<(u32, u32)> {
     vec![
