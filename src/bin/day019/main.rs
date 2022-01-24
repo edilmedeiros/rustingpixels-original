@@ -2,7 +2,7 @@ use image::{Pixel, Rgba};
 use rand::prelude::*;
 use std::f64;
 
-use rustingpixels::primitives::canvas::*;
+use rustingpixels::primitives::transform::*;
 
 fn main() {
     let width: u32 = 1080;
@@ -39,7 +39,7 @@ fn main() {
         p = barnsley_fern(p, f1, f2, f3, f4, &mut rng);
     }
     image
-        .save("images/day013-0.png")
+        .save("images/day019-0.png")
         .unwrap();
 
 }
@@ -68,5 +68,19 @@ fn point_is_visible(x: u32, y: u32, width: u32, height: u32) -> bool {
         true
     } else {
         false
+    }
+}
+
+#[derive(PartialEq, Debug)]
+pub struct Point<T> {
+    pub x: T,
+    pub y: T,
+}
+
+impl Point<f64> {
+    pub fn point_to_canvas_coordinate(&self, matrix: &TransformMatrix) -> (u32, u32) {
+        let x_new: u32 = (self.x * matrix.xx + self.y * matrix.xy + matrix.x0).floor() as u32;
+        let y_new: u32 = (self.x * matrix.yx + self.y * matrix.yy + matrix.y0).floor() as u32;
+        (x_new, y_new)
     }
 }
