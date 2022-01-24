@@ -1,4 +1,5 @@
-use image::{Pixel, Rgba};
+use std::fs::File;
+use image::{Pixel, Rgba, jpeg::JpegEncoder};
 use rand::prelude::*;
 use std::f64;
 
@@ -41,6 +42,10 @@ fn main() {
     image
         .save("images/day019-0.png")
         .unwrap();
+    let mut buffer = File::create(format!("images/day019-{}.jpg", 0)).unwrap();
+    let mut encoder = JpegEncoder::new_with_quality(&mut buffer, 100);
+    encoder.encode_image(&image).unwrap();
+
 
 }
 
